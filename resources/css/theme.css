@@ -528,8 +528,15 @@ h6,
     display: none !important;
 }
 
-/* Injected group-title icon (see --mrvls-ic-* tokens above). */
-.fi-sidebar-group-btn::before {
+/* Injected group-title icon (see --mrvls-ic-* tokens above). Scoped to the
+   convention data-group keys ONLY — a group not using one of these keys (or a
+   key configured via the plugin's groupIcons()) gets no ::before box, so it
+   keeps Filament's default per-item icons instead of an empty square. */
+.fi-sidebar-group[data-group='operator'] .fi-sidebar-group-btn::before,
+.fi-sidebar-group[data-group='management'] .fi-sidebar-group-btn::before,
+.fi-sidebar-group[data-group='content'] .fi-sidebar-group-btn::before,
+.fi-sidebar-group[data-group='settings'] .fi-sidebar-group-btn::before,
+.fi-sidebar-group[data-group='help'] .fi-sidebar-group-btn::before {
     content: '';
     width: 1.5rem;
     height: 1.5rem;
