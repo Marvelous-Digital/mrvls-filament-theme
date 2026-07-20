@@ -1,6 +1,6 @@
 <?php
 
-namespace Marvelous\FilamentModernSaas;
+namespace Mrvls\FilamentTheme;
 
 use Closure;
 use Filament\Contracts\Plugin;
@@ -12,15 +12,15 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Support\HtmlString;
 
 /**
- * Modern SaaS — a Filament v5 admin theme distributed as a plugin.
+ * MRVLS — a Filament v5 admin theme distributed as a plugin.
  *
  * The look lives in resources/css/theme.css (registered as a layered asset by
- * ModernSaasThemeServiceProvider). This plugin does the per-panel wiring:
+ * MrvlsThemeServiceProvider). This plugin does the per-panel wiring:
  * brand colours, fonts, the floating-sidebar layout, the sidebar toggle icons,
  * and the opt-in chrome (brand lockup, sign-out button, topbar pill, group
  * icons). Register it on the panels you want; panels without it are untouched.
  */
-class ModernSaasTheme implements Plugin
+class MrvlsTheme implements Plugin
 {
     /** @var array{color?: string, ink?: string, strong?: string} */
     protected array $accent = [];
@@ -75,7 +75,7 @@ class ModernSaasTheme implements Plugin
 
     public function getId(): string
     {
-        return 'marvelous-modern-saas-theme';
+        return 'mrvls-filament-theme';
     }
 
     public function accent(?string $color = null, ?string $ink = null, ?string $strong = null): static
@@ -227,7 +227,7 @@ class ModernSaasTheme implements Plugin
         if ($this->brandLogos) {
             $panel->renderHook(
                 PanelsRenderHook::SIDEBAR_START,
-                fn (): string => view('filament-modern-saas::brand', [
+                fn (): string => view('mrvls-filament-theme::brand', [
                     'logos' => $this->brandLogos,
                     'alt' => $this->brandAlt,
                 ])->render(),
@@ -237,7 +237,7 @@ class ModernSaasTheme implements Plugin
         if ($this->signout) {
             $panel->renderHook(
                 PanelsRenderHook::SIDEBAR_FOOTER,
-                fn (): string => view('filament-modern-saas::signout', [
+                fn (): string => view('mrvls-filament-theme::signout', [
                     'label' => $this->signoutLabel,
                 ])->render(),
             );
@@ -252,7 +252,7 @@ class ModernSaasTheme implements Plugin
                     $pill = $resolver();
 
                     return $pill
-                        ? view('filament-modern-saas::topbar-pill', ['pill' => $pill])->render()
+                        ? view('mrvls-filament-theme::topbar-pill', ['pill' => $pill])->render()
                         : '';
                 },
             );
@@ -287,7 +287,7 @@ class ModernSaasTheme implements Plugin
         ];
 
         if ($this->headingFont !== null) {
-            $root[] = "--fms-font-heading:'" . $this->sanitize($this->headingFont) . "', ui-sans-serif, system-ui, sans-serif";
+            $root[] = "--mrvls-font-heading:'" . $this->sanitize($this->headingFont) . "', ui-sans-serif, system-ui, sans-serif";
         }
 
         $dark = $this->tokenLines($this->darkAccent, $this->darkSurfaces);
@@ -309,8 +309,8 @@ class ModernSaasTheme implements Plugin
             $mask = $this->sanitizeMask($icon);
 
             $rules[] = $selector . ' .fi-sidebar-item-icon{display:none !important;}';
-            $rules[] = $selector . " .fi-sidebar-group-btn::before{content:'';width:1.5rem;height:1.5rem;flex:none;background-color:var(--fms-text-muted);-webkit-mask:" . $mask . ' center/contain no-repeat;mask:' . $mask . ' center/contain no-repeat;}';
-            $rules[] = $selector . '.fi-active .fi-sidebar-group-btn::before{background-color:var(--fms-text-strong);}';
+            $rules[] = $selector . " .fi-sidebar-group-btn::before{content:'';width:1.5rem;height:1.5rem;flex:none;background-color:var(--mrvls-text-muted);-webkit-mask:" . $mask . ' center/contain no-repeat;mask:' . $mask . ' center/contain no-repeat;}';
+            $rules[] = $selector . '.fi-active .fi-sidebar-group-btn::before{background-color:var(--mrvls-text-strong);}';
         }
 
         if ($rules) {
@@ -328,12 +328,12 @@ class ModernSaasTheme implements Plugin
     protected function tokenLines(array $accent, array $surfaces): array
     {
         $map = [
-            '--fms-accent' => $accent['color'] ?? null,
-            '--fms-accent-ink' => $accent['ink'] ?? null,
-            '--fms-accent-strong' => $accent['strong'] ?? null,
-            '--fms-page-bg' => $surfaces['page'] ?? null,
-            '--fms-card-bg' => $surfaces['card'] ?? null,
-            '--fms-sidebar-bg' => $surfaces['sidebar'] ?? null,
+            '--mrvls-accent' => $accent['color'] ?? null,
+            '--mrvls-accent-ink' => $accent['ink'] ?? null,
+            '--mrvls-accent-strong' => $accent['strong'] ?? null,
+            '--mrvls-page-bg' => $surfaces['page'] ?? null,
+            '--mrvls-card-bg' => $surfaces['card'] ?? null,
+            '--mrvls-sidebar-bg' => $surfaces['sidebar'] ?? null,
         ];
 
         $lines = [];

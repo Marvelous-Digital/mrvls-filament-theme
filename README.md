@@ -1,4 +1,4 @@
-# Modern SaaS — a Filament v5 theme
+# MRVLS — a Filament v5 theme
 
 A drop-in admin theme for Filament v5: a floating detached sidebar with a tree
 nav, a transparent topbar, big rounded cards on a cream-tinted canvas, a
@@ -6,31 +6,31 @@ configurable accent, and a fully themed dark mode. Distributed as a plugin, so
 installing it in a new project is `composer require` plus one line.
 
 It ships as a **layered CSS asset** on top of Filament's own styles — no Vite
-step, no Tailwind build in your app. Every rule targets `.fi-*` / `.fms-*`
+step, no Tailwind build in your app. Every rule targets `.fi-*` / `.mrvls-*`
 classes, so it applies cleanly to a stock panel.
 
 ## Install
 
 ```bash
-composer require marvelous/filament-modern-saas
+composer require mrvls/filament-theme
 php artisan filament:assets
 ```
 
 If you deploy, run `php artisan filament:assets` as part of your build so the
-stylesheet is published to `public/css/marvelous/filament-modern-saas/`.
+stylesheet is published to `public/css/mrvls/filament-theme/`.
 
 ## Use
 
 Register the plugin on any panel:
 
 ```php
-use Marvelous\FilamentModernSaas\ModernSaasTheme;
+use Mrvls\FilamentTheme\MrvlsTheme;
 
 public function panel(Panel $panel): Panel
 {
     return $panel
         // ...
-        ->plugin(ModernSaasTheme::make());
+        ->plugin(MrvlsTheme::make());
 }
 ```
 
@@ -46,7 +46,7 @@ Everything is driven by CSS custom properties; override the ones you want from
 the plugin:
 
 ```php
-ModernSaasTheme::make()
+MrvlsTheme::make()
     ->accent(color: '#2f5fff', ink: '#ffffff', strong: '#2450d8')
     ->darkAccent(color: '#8ea9ff', ink: '#0b1020')
     ->surfaces(page: '#f4f5fb', card: '#ffffff')
@@ -55,7 +55,7 @@ ModernSaasTheme::make()
     ->headingFont('Space Grotesk', url: 'https://fonts.bunny.net/css?family=space-grotesk:500,600,700&display=swap');
 ```
 
-`--fms-accent-tint` and `--fms-accent-ring` derive from `--fms-accent` via
+`--mrvls-accent-tint` and `--mrvls-accent-ring` derive from `--mrvls-accent` via
 `color-mix`, so a single `accent()` call recolours most of the UI. Set `strong`
 (the hover shade) and `ink` (text/icon on the accent) when you do a full
 rebrand. Anything not passed keeps the theme default.
@@ -63,7 +63,7 @@ rebrand. Anything not passed keeps the theme default.
 For deeper edits, publish the stylesheet and edit the tokens directly:
 
 ```bash
-php artisan vendor:publish --tag=filament-modern-saas-styles
+php artisan vendor:publish --tag=mrvls-filament-theme-styles
 ```
 
 ## Optional chrome
@@ -71,7 +71,7 @@ php artisan vendor:publish --tag=filament-modern-saas-styles
 Opt-in pieces that match the theme. Each is off by default.
 
 ```php
-ModernSaasTheme::make()
+MrvlsTheme::make()
     // Brand lockup at the top of the sidebar (hides Filament's default logo).
     // Pass one logo, or a light/dark pair.
     ->brandLogos(

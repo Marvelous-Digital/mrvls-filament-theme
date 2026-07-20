@@ -3,11 +3,11 @@
     $dark = $logos['dark'] ?? null;
 @endphp
 
-<a href="{{ filament()->getHomeUrl() }}" class="fms-brand">
+<a href="{{ filament()->getHomeUrl() }}" class="mrvls-brand">
     @if ($light && $dark)
-        <img src="{{ $light }}" alt="{{ $alt }}" class="fms-brand-logo fms-brand-logo--on-light" />
-        <img src="{{ $dark }}" alt="{{ $alt }}" class="fms-brand-logo fms-brand-logo--on-dark" />
+        <img src="{{ $light }}" alt="{{ $alt }}" class="mrvls-brand-logo mrvls-brand-logo--on-light" />
+        <img src="{{ $dark }}" alt="{{ $alt }}" class="mrvls-brand-logo mrvls-brand-logo--on-dark" />
     @elseif ($light || $dark)
-        <img src="{{ $light ?? $dark }}" alt="{{ $alt }}" class="fms-brand-logo" />
+        <img src="{{ $light ?? $dark }}" alt="{{ $alt }}" class="mrvls-brand-logo" />
     @endif
 </a>

@@ -6,29 +6,29 @@
     $dashOffset = $circumference * (1 - $ratio);
 @endphp
 
-<div class="fms-topbar-pill-slot">
+<div class="mrvls-topbar-pill-slot">
     <a
         href="{{ $pill['href'] ?? '#' }}"
-        class="fms-topbar-pill"
+        class="mrvls-topbar-pill"
         @isset($pill['tooltip']) title="{{ $pill['tooltip'] }}" @endisset
         @if (! empty($pill['external'])) target="_blank" rel="noopener" @endif
     >
         @isset($pill['status'])
-            <span class="fms-topbar-pill-status is-{{ $pill['status'] }}" aria-hidden="true"></span>
+            <span class="mrvls-topbar-pill-status is-{{ $pill['status'] }}" aria-hidden="true"></span>
         @endisset
 
-        <span class="fms-topbar-pill-title">{{ $pill['title'] ?? '' }}</span>
+        <span class="mrvls-topbar-pill-title">{{ $pill['title'] ?? '' }}</span>
 
         @if (! empty($pill['badge']))
-            <span class="fms-topbar-pill-badge">{{ $pill['badge'] }}</span>
+            <span class="mrvls-topbar-pill-badge">{{ $pill['badge'] }}</span>
         @endif
 
         @if ($total > 0)
-            <span class="fms-topbar-pill-progress" role="img" aria-label="{{ $pill['tooltip'] ?? "{$done}/{$total}" }}">
+            <span class="mrvls-topbar-pill-progress" role="img" aria-label="{{ $pill['tooltip'] ?? "{$done}/{$total}" }}">
                 <svg viewBox="0 0 20 20" aria-hidden="true">
-                    <circle class="fms-topbar-pill-ring-track" cx="10" cy="10" r="8" />
+                    <circle class="mrvls-topbar-pill-ring-track" cx="10" cy="10" r="8" />
                     <circle
-                        class="fms-topbar-pill-ring"
+                        class="mrvls-topbar-pill-ring"
                         cx="10"
                         cy="10"
                         r="8"
@@ -36,7 +36,7 @@
                         stroke-dashoffset="{{ $dashOffset }}"
                     />
                 </svg>
-                <span class="fms-topbar-pill-count">{{ $done }}/{{ $total }}</span>
+                <span class="mrvls-topbar-pill-count">{{ $done }}/{{ $total }}</span>
             </span>
         @endif
     </a>
