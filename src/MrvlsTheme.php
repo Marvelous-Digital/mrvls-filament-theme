@@ -7,6 +7,7 @@ use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsIconAlias;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\HtmlString;
@@ -219,13 +220,13 @@ class MrvlsTheme implements Plugin
             $this->registerToggleIcons();
         }
 
-        $panel->renderHook(
+        FilamentView::registerRenderHook(
             PanelsRenderHook::HEAD_END,
             fn (): string => $this->headMarkup(),
         );
 
         if ($this->brandLogos) {
-            $panel->renderHook(
+            FilamentView::registerRenderHook(
                 PanelsRenderHook::SIDEBAR_START,
                 fn (): string => view('mrvls-filament-theme::brand', [
                     'logos' => $this->brandLogos,
@@ -235,7 +236,7 @@ class MrvlsTheme implements Plugin
         }
 
         if ($this->signout) {
-            $panel->renderHook(
+            FilamentView::registerRenderHook(
                 PanelsRenderHook::SIDEBAR_FOOTER,
                 fn (): string => view('mrvls-filament-theme::signout', [
                     'label' => $this->signoutLabel,
@@ -246,7 +247,7 @@ class MrvlsTheme implements Plugin
         if ($this->topbarPill !== null) {
             $resolver = $this->topbarPill;
 
-            $panel->renderHook(
+            FilamentView::registerRenderHook(
                 PanelsRenderHook::TOPBAR_START,
                 function () use ($resolver): string {
                     $pill = $resolver();
