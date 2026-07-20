@@ -119,7 +119,3 @@ Groups that don't use these keys keep Filament's default per-item icons.
   every Filament panel in the app. The plugin's per-panel wiring (colours,
   fonts, chrome) only applies where you register it.
 - Requires PHP 8.2+ and Filament v5.
-
-## License
-
-MIT.
