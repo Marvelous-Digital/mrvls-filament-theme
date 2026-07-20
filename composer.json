@@ -1,0 +1,31 @@
+{
+    "name": "marvelous/filament-modern-saas",
+    "description": "A modern-SaaS theme for Filament v5: floating detached sidebar, cream canvas, big rounded cards, configurable accent, dark mode included.",
+    "keywords": [
+        "laravel",
+        "filament",
+        "filament-plugin",
+        "filament-theme",
+        "admin-theme"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "filament/filament": "^5.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Marvelous\\FilamentModernSaas\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Marvelous\\FilamentModernSaas\\ModernSaasThemeServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

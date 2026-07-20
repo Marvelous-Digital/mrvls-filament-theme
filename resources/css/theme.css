@@ -1,0 +1,1376 @@
+/* ============================================================
+   Modern SaaS — a Filament v5 admin theme
+   Floating detached sidebar · transparent topbar · big rounded
+   cards on a cream-tinted canvas · configurable accent, dark mode
+   included. Registered as a layered asset on top of Filament's own
+   CSS; every rule targets .fi-* / .fms-* classes. Brand tokens live
+   in :root below — override them from the ModernSaasTheme plugin
+   (accent, fonts, surfaces) or in your own stylesheet.
+   ============================================================ */
+
+
+:root {
+    /* --- Type — display face for headings; body font is set by the plugin's
+       ->bodyFont() (Filament's ->font()). Override --fms-font-heading below. --- */
+    --fms-font-heading: 'Bricolage Grotesque', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* --- Accent (deep green on light surfaces) --- */
+    --fms-accent: #013e37;
+    --fms-accent-strong: #0a5a4b;
+    --fms-accent-ink: #ffefb3;
+    --fms-accent-tint: color-mix(in oklab, var(--fms-accent) 14%, white);
+    --fms-accent-ring: color-mix(in oklab, var(--fms-accent) 55%, transparent);
+
+    /* --- Surfaces (light) — cream-tinted whites, never pure #fff --- */
+    --fms-page-bg: #eeebdf;
+    --fms-card-bg: #fdfaee;
+    --fms-sidebar-bg: #fdfaee;
+    --fms-hairline: color-mix(in oklab, #14201a 8%, transparent);
+    --fms-tree-line: color-mix(in oklab, #14201a 16%, var(--fms-sidebar-bg));
+    --fms-text-strong: #14201a;
+    --fms-text-muted: #5f6c64;
+
+    /* Group-title icons (painted via mask-image so they follow the theme). */
+    --fms-ic-operator: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.6' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25Z'/%3E%3C/svg%3E");
+    --fms-ic-management: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.6' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21'/%3E%3C/svg%3E");
+    --fms-ic-content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.6' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9Z'/%3E%3C/svg%3E");
+    --fms-ic-settings: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.6' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75'/%3E%3C/svg%3E");
+    --fms-ic-help: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.6' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0Zm-9 5.25h.008v.008H12v-.008Z'/%3E%3C/svg%3E");
+
+    /* --- Shell geometry --- */
+    --fms-gap: 1.5rem;
+    --fms-sidebar-float-w: 16rem;
+    --fms-sidebar-pad: 1rem;
+    --fms-content-offset: calc(var(--fms-gap) + var(--fms-sidebar-float-w));
+
+    /* --- Radii --- */
+    --fms-radius-shell: 1.5rem;
+    --fms-radius-card: 1.5rem;
+    --fms-radius-lg: 1rem;
+    --fms-radius-input: 0.75rem;
+
+    /* --- Shadows --- */
+    --fms-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.03), 0 18px 40px -24px rgba(16, 24, 40, 0.16);
+    --fms-shadow-float: 0 1px 3px rgba(16, 24, 40, 0.04), 0 24px 48px -28px rgba(16, 24, 40, 0.22);
+    --fms-shadow-pop: 0 8px 24px rgba(16, 24, 40, 0.1), 0 32px 64px -32px rgba(16, 24, 40, 0.32);
+
+    /* --- Motion --- */
+    --fms-ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+    --fms-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --fms-dur-fast: 120ms;
+    --fms-dur: 200ms;
+    --fms-dur-slow: 350ms;
+}
+
+:is(.dark) {
+    /* Accent flips on dark: cream carries the brand, green becomes its ink.
+       Surfaces are shades of the brand green, not neutral near-black. */
+    --fms-accent: #ffefb3;
+    --fms-accent-strong: #f3dd90;
+    --fms-accent-ink: #013e37;
+    --fms-accent-tint: color-mix(in oklab, var(--fms-accent) 20%, transparent);
+    --fms-page-bg: #02201c;
+    --fms-card-bg: #08332c;
+    --fms-sidebar-bg: #08332c;
+    --fms-hairline: color-mix(in oklab, #ffefb3 10%, transparent);
+    --fms-tree-line: color-mix(in oklab, #ffefb3 16%, var(--fms-sidebar-bg));
+    --fms-text-strong: #f5f2e0;
+    --fms-text-muted: #9db7ad;
+    --fms-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 44px -26px rgba(0, 0, 0, 0.75);
+    --fms-shadow-float: 0 1px 3px rgba(0, 0, 0, 0.5), 0 24px 52px -28px rgba(0, 0, 0, 0.8);
+    --fms-shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.55), 0 36px 72px -32px rgba(0, 0, 0, 0.85);
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   Typography — Bricolage Grotesque for display text only
+   (headings, stat values, brand wordmark); body stays DM Sans.
+   The extra family is loaded via the HEAD_END render hook in
+   AdminPanelProvider (Bunny Fonts, weights 500–700).
+   ============================================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.fi-wi-stats-overview-stat-value,
+.fi-sidebar-nav {
+    font-family: var(--fms-font-heading);
+}
+
+/* ============================================================
+   Motion — page-load choreography
+   Header rises first, then each content block cascades in.
+   Kept subtle (8px / 350ms) so the replay on every navigation
+   reads as snappy feedback, never as a show. `backwards` (not
+   `forwards`) so no fill state lingers after the animation —
+   a persistent transform would break fixed-position children.
+   ============================================================ */
+@keyframes fms-rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fi-page-main > * {
+    animation: fms-rise var(--fms-dur-slow) var(--fms-ease-out-expo) backwards;
+}
+
+.fi-page-main > *:nth-child(2) {
+    animation-delay: 50ms;
+}
+
+.fi-page-main > *:nth-child(3) {
+    animation-delay: 100ms;
+}
+
+.fi-page-main > *:nth-child(4) {
+    animation-delay: 150ms;
+}
+
+.fi-page-main > *:nth-child(n + 5) {
+    animation-delay: 200ms;
+}
+
+/* Stat cards cascade left-to-right. Fade only — their wrapper already
+   rises with the page cascade above, so a second translate here would
+   compound into a harsh double-jump (and Livewire widget re-renders
+   would replay the movement). Each stat sits alone inside a
+   .fi-sc-component inside a .fi-grid-col — the grid columns are the
+   siblings, so the stagger keys off the column position. */
+@keyframes fms-fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fi-wi-stats-overview-stat {
+    animation: fms-fade 450ms var(--fms-ease-out) backwards;
+}
+
+.fi-grid-col:nth-child(2) .fi-wi-stats-overview-stat {
+    animation-delay: 50ms;
+}
+
+.fi-grid-col:nth-child(3) .fi-wi-stats-overview-stat {
+    animation-delay: 100ms;
+}
+
+.fi-grid-col:nth-child(n + 4) .fi-wi-stats-overview-stat {
+    animation-delay: 150ms;
+}
+
+/* Simple pages (login, password reset) — the card rises once */
+.fi-simple-main {
+    animation: fms-rise var(--fms-dur-slow) var(--fms-ease-out-expo) backwards;
+}
+
+/* ============================================================
+   Canvas — the whole shell sits on soft gray
+   ============================================================ */
+.fi-body,
+.fi-layout,
+.fi-main-ctn,
+.fi-main {
+    background-color: var(--fms-page-bg) !important;
+}
+
+.fi-main {
+    padding-top: 0.5rem;
+    padding-bottom: 2rem;
+    padding-inline-end: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+    .fi-main {
+        padding-inline-end: 2rem;
+    }
+}
+
+/* ============================================================
+   Floating detached sidebar (desktop)
+   ============================================================ */
+@media (min-width: 1024px) {
+    .fi-sidebar.fi-main-sidebar {
+        position: fixed !important;
+        inset-block: var(--fms-gap);
+        inset-inline-start: var(--fms-gap);
+        inset-inline-end: auto;
+        height: auto !important;
+        width: var(--fms-sidebar-float-w) !important;
+        border-radius: var(--fms-radius-shell);
+        box-shadow: var(--fms-shadow-float);
+        border: 1px solid var(--fms-hairline);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--fms-sidebar-bg) !important;
+        z-index: 30;
+    }
+
+    /* Push content + topbar clear of the floating sidebar */
+    .fi-main-ctn {
+        padding-inline-start: var(--fms-content-offset) !important;
+    }
+
+    .fi-topbar-ctn {
+        padding-inline-start: var(--fms-content-offset) !important;
+    }
+
+    /* The ctn above already clears the floating sidebar; the nav itself
+       only needs the 2rem inset that mirrors its right edge, so hook
+       content (report context pill) starts at the content's left edge. */
+    .fi-topbar {
+        padding-inline-start: 2rem !important;
+    }
+
+    /* ---- Fully-collapsible sidebar (desktop) ----
+       Vendor's collapsed state is only -translate-x-full, but this sidebar
+       floats inset by --fms-gap with a shadow, so 100% of its width still
+       leaves a sliver + shadow bleed on screen. Slide it further off and
+       drop it from the a11y tree once the slide finishes; visibility flips
+       back instantly on open. */
+    .fi-body-has-sidebar-fully-collapsible-on-desktop .fi-sidebar.fi-main-sidebar {
+        transition:
+            transform var(--fms-dur-slow) var(--fms-ease-out-expo),
+            visibility 0s;
+    }
+
+    .fi-body-has-sidebar-fully-collapsible-on-desktop .fi-sidebar.fi-main-sidebar:not(.fi-sidebar-open) {
+        transform: translateX(calc(-100% - 4rem));
+        visibility: hidden;
+        transition:
+            transform var(--fms-dur-slow) var(--fms-ease-out-expo),
+            visibility 0s var(--fms-dur-slow);
+    }
+
+    /* Content + topbar clear the floating sidebar only while it is open.
+       Collapsed, the containers add NOTHING — .fi-main (vendor lg:px-8) and
+       .fi-topbar (2rem rule above) already carry the 2rem inset themselves;
+       any container padding here would stack into a double left margin. */
+    .fi-body-has-sidebar-fully-collapsible-on-desktop .fi-main-ctn,
+    .fi-body-has-sidebar-fully-collapsible-on-desktop .fi-topbar-ctn {
+        padding-inline-start: 0 !important;
+        transition: padding-inline-start var(--fms-dur-slow) var(--fms-ease-out-expo);
+    }
+
+    .fi-body-has-sidebar-fully-collapsible-on-desktop:has(.fi-sidebar.fi-main-sidebar.fi-sidebar-open) .fi-main-ctn,
+    .fi-body-has-sidebar-fully-collapsible-on-desktop:has(.fi-sidebar.fi-main-sidebar.fi-sidebar-open) .fi-topbar-ctn {
+        padding-inline-start: var(--fms-content-offset) !important;
+    }
+}
+
+.fi-sidebar,
+.fi-sidebar-nav {
+    background-color: var(--fms-sidebar-bg) !important;
+    border-right: 0 !important;
+}
+
+.fi-sidebar-nav {
+    padding: 0.5rem var(--fms-sidebar-pad) 0.75rem !important;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+/* ---- Brand lockup (SIDEBAR_START render hook) ----
+   Two ink variants of the same SVG; the sidebar is cream in light mode
+   (green-ink logo) and brand green in dark mode (cream-ink logo). */
+.fms-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.375rem var(--fms-sidebar-pad) 0.875rem;
+    text-decoration: none;
+}
+
+.fms-brand-logo {
+    height: 2.5rem;
+    width: auto;
+    transition: transform var(--fms-dur) var(--fms-ease-out);
+}
+
+.fms-brand:hover .fms-brand-logo {
+    transform: scale(1.03);
+}
+
+.fms-brand-logo--on-dark,
+:is(.dark) .fms-brand-logo--on-light {
+    display: none;
+}
+
+:is(.dark) .fms-brand-logo--on-dark {
+    display: block;
+}
+
+/* ---- Sign out (SIDEBAR_FOOTER render hook) ---- */
+.fi-sidebar-footer {
+    background-color: var(--fms-sidebar-bg) !important;
+    box-shadow: none !important;
+    border-top: 1px solid var(--fms-hairline);
+}
+
+.fms-signout-ctn {
+    padding: 0.75rem var(--fms-sidebar-pad);
+    margin-top: auto;
+    border-top: 1px solid var(--fms-hairline);
+}
+
+.fms-signout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--fms-radius-lg);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--fms-text-muted);
+    background: transparent;
+    cursor: pointer;
+    transition:
+        background-color var(--fms-dur-fast) var(--fms-ease-out),
+        color var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fms-signout svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    transition: transform var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fms-signout:hover svg {
+    transform: translateX(2px);
+}
+
+.fms-signout:hover {
+    background-color: color-mix(in oklab, #ef4444 8%, transparent);
+    color: #dc2626;
+}
+
+/* ============================================================
+   Sidebar nav — quiet by default, accent active stroke
+   (Filament classes: .fi-sidebar-item-btn, active = .fi-active)
+   ============================================================ */
+.fi-sidebar-item-btn {
+    position: relative;
+    border-radius: var(--fms-radius-lg) !important;
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.55rem !important;
+    font-weight: 500;
+    color: var(--fms-text-muted) !important;
+    transition:
+        background-color var(--fms-dur-fast) var(--fms-ease-out),
+        color var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fi-sidebar-item-btn .fi-sidebar-item-label {
+    color: inherit !important;
+    transition: transform var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+/* Grouped (tree) items: the label nudges toward the cursor on hover —
+   top-level items keep their label pinned next to the icon. */
+.fi-sidebar-group:not([data-group-label='']) .fi-sidebar-item-btn:hover .fi-sidebar-item-label {
+    transform: translateX(2px);
+}
+
+.fi-sidebar-item-btn:hover {
+    background-color: transparent !important;
+    color: var(--fms-text-strong) !important;
+}
+
+/* Active — straight accent left stroke, NO background, dark text/icon */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: transparent !important;
+    color: var(--fms-text-strong) !important;
+    font-weight: 700 !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn:hover {
+    background-color: transparent !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: var(--fms-text-strong) !important;
+}
+
+/* Tree connector between grouped nav items: a vertical trunk down the left
+   of each group's items, plus a short horizontal tick to each item. The
+   active item's tick turns accent. Items are indented to make the tree gutter. */
+.fi-sidebar-group-items {
+    position: relative;
+    padding-left: 2.125rem;
+    row-gap: 0 !important;
+}
+
+.fi-sidebar-group-items::before {
+    content: '';
+    position: absolute;
+    left: 1.25rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 1px;
+    background: var(--fms-tree-line);
+}
+
+/* Every nav row (grouped or top-level) gets an equal whole-pixel height so all
+   the tree's horizontal ticks land on the same device-pixel phase — otherwise
+   1px hairlines centered in fractional-height rows anti-alias differently and
+   look uneven. The group-label button is likewise pinned (see below) so each
+   group block is an integer height and every group shares that phase. */
+.fi-sidebar-item-btn {
+    height: 2.375rem;
+    line-height: 1.25rem;
+}
+
+.fi-sidebar-group-items .fi-sidebar-item-btn::before {
+    content: '';
+    position: absolute;
+    left: -0.875rem;
+    top: 50%;
+    width: 0.875rem;
+    height: 1px;
+    background: var(--fms-tree-line);
+    transition: background-color var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fi-sidebar-group-items .fi-sidebar-item.fi-active > .fi-sidebar-item-btn::before {
+    background: var(--fms-accent);
+}
+
+/* When a labelled group contains the active item, its whole tree (trunk +
+   every tick) turns accent. The label-less top-level group is handled below. */
+.fi-sidebar-group.fi-active:not([data-group-label='']) .fi-sidebar-group-items::before,
+.fi-sidebar-group.fi-active:not([data-group-label='']) .fi-sidebar-group-items .fi-sidebar-item-btn::before {
+    background: var(--fms-accent);
+}
+
+/* Top-level items (label-less group): no tree connector — they keep their
+   icons and read as primary nav. Active one gets a flush accent left stroke. */
+.fi-sidebar-group[data-group-label=''] .fi-sidebar-group-items {
+    padding-left: 0;
+}
+
+.fi-sidebar-group[data-group-label=''] .fi-sidebar-group-items::before,
+.fi-sidebar-group[data-group-label=''] .fi-sidebar-item:last-child > .fi-sidebar-item-btn::after {
+    display: none !important;
+}
+
+.fi-sidebar-group[data-group-label=''] .fi-sidebar-item-btn::before {
+    left: -0.5rem;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 3px;
+    height: auto;
+    transform: none;
+    border-radius: 0 3px 3px 0;
+    background: transparent;
+}
+
+.fi-sidebar-group[data-group-label=''] .fi-sidebar-item.fi-active > .fi-sidebar-item-btn::before {
+    background: var(--fms-accent);
+}
+
+/* The trunk must end at the last item's tick — mask the segment below its
+   centre with the sidebar background so the line doesn't run past it. */
+.fi-sidebar-group-items .fi-sidebar-item:last-child > .fi-sidebar-item-btn::after {
+    content: '';
+    position: absolute;
+    left: -1rem;
+    top: calc(50% + 1px);
+    width: 0.8rem;
+    height: 1.5rem;
+    background: var(--fms-sidebar-bg);
+}
+
+/* Tighter vertical rhythm — Filament defaults leave ~1.75rem between
+   groups and 0.5rem around each label; pull those in. */
+.fi-sidebar-nav-groups {
+    row-gap: 0.5rem !important;
+}
+
+.fi-sidebar-group-btn {
+    gap: 0.625rem !important;
+    height: 2.25rem;
+    padding-block: 0 !important;
+    align-items: center;
+    position: relative;
+}
+
+/* Reference nav style: within groups that opt into a group-title icon (the
+   convention keys below, painted by --fms-ic-* + the ::before rules that
+   follow), items go icon-less so the group title carries the icon. Groups
+   that don't use these keys keep Filament's default per-item icons. */
+.fi-sidebar-group[data-group='operator'] .fi-sidebar-item-icon,
+.fi-sidebar-group[data-group='management'] .fi-sidebar-item-icon,
+.fi-sidebar-group[data-group='content'] .fi-sidebar-item-icon,
+.fi-sidebar-group[data-group='settings'] .fi-sidebar-item-icon,
+.fi-sidebar-group[data-group='help'] .fi-sidebar-item-icon {
+    display: none !important;
+}
+
+/* Injected group-title icon (see --fms-ic-* tokens above). */
+.fi-sidebar-group-btn::before {
+    content: '';
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    background-color: var(--fms-text-muted);
+    mask-position: center;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+}
+
+.fi-sidebar-group[data-group='operator'] .fi-sidebar-group-btn::before {
+    mask-image: var(--fms-ic-operator);
+    -webkit-mask-image: var(--fms-ic-operator);
+}
+
+.fi-sidebar-group[data-group='management'] .fi-sidebar-group-btn::before {
+    mask-image: var(--fms-ic-management);
+    -webkit-mask-image: var(--fms-ic-management);
+}
+
+.fi-sidebar-group[data-group='content'] .fi-sidebar-group-btn::before {
+    mask-image: var(--fms-ic-content);
+    -webkit-mask-image: var(--fms-ic-content);
+}
+
+.fi-sidebar-group[data-group='settings'] .fi-sidebar-group-btn::before {
+    mask-image: var(--fms-ic-settings);
+    -webkit-mask-image: var(--fms-ic-settings);
+}
+
+.fi-sidebar-group[data-group='help'] .fi-sidebar-group-btn::before {
+    mask-image: var(--fms-ic-help);
+    -webkit-mask-image: var(--fms-ic-help);
+}
+
+.fi-sidebar-group-label {
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    opacity: 1 !important;
+    color: var(--fms-text-muted) !important;
+}
+
+/* Active group: title + icon go dark/bold; inactive stay grey. */
+.fi-sidebar-group.fi-active .fi-sidebar-group-label {
+    color: var(--fms-text-strong) !important;
+    font-weight: 700 !important;
+}
+
+.fi-sidebar-group.fi-active .fi-sidebar-group-btn::before {
+    background-color: var(--fms-text-strong);
+}
+
+/* Active group title also gets a flush accent left stroke, next to the icon. */
+.fi-sidebar-group.fi-active .fi-sidebar-group-btn::after {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--fms-accent);
+}
+
+/* Tenant menu (company switcher) — full-width, matches nav items.
+   Drop L/R padding (keep bottom) AND override Filament's default
+   `.fi-sidebar .fi-tenant-menu { margin-inline: 1rem }` so the box
+   lines up with the nav entries below it. */
+.fi-tenant-menu {
+    display: block;
+    padding: 0 0 0.75rem;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--fms-hairline);
+}
+
+.fi-sidebar .fi-tenant-menu {
+    margin-inline: var(--fms-sidebar-pad) !important;
+    margin-top: 0.5rem !important;
+}
+
+/* The dropdown trigger wrapper is inline by default — force it full width
+   so the button stretches edge-to-edge like the nav items */
+.fi-tenant-menu > .fi-dropdown-trigger,
+.fi-tenant-menu .fi-dropdown-trigger {
+    display: block !important;
+    width: 100% !important;
+}
+
+.fi-tenant-menu-trigger {
+    display: flex !important;
+    align-items: center;
+    width: 100% !important;
+    gap: 0.625rem;
+    padding: 0.5rem 0.625rem !important;
+    border-radius: var(--fms-radius-lg) !important;
+    border: 1px solid var(--fms-hairline);
+    background-color: transparent;
+    transition:
+        background-color var(--fms-dur-fast) var(--fms-ease-out),
+        border-color var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fi-tenant-menu-trigger:hover {
+    background-color: color-mix(in oklab, #14201a 4%, transparent);
+}
+
+:is(.dark) .fi-tenant-menu-trigger:hover {
+    background-color: color-mix(in oklab, #ffffff 6%, transparent);
+}
+
+.fi-tenant-menu-trigger-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: start;
+}
+
+.fi-tenant-menu-trigger-tenant-name {
+    font-weight: 600;
+    color: var(--fms-text-strong);
+}
+
+/* ============================================================
+   Topbar — transparent, floating controls
+   ============================================================ */
+.fi-topbar,
+.fi-topbar-ctn,
+.fi-topbar nav {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-bottom: 0 !important;
+    border: 0 !important;
+    backdrop-filter: none !important;
+}
+
+/* Scrolls away with the page — Filament pins it (sticky top-0) by default,
+   but a transparent bar over scrolled content just overlaps illegibly. */
+.fi-topbar-ctn {
+    position: static !important;
+}
+
+.fi-topbar {
+    padding-top: var(--fms-gap);
+    padding-bottom: 0;
+    /* Align topbar controls with the main content's right edge (.fi-main = 2rem). */
+    padding-right: 2rem !important;
+}
+
+/* Hide redundant topbar brand (logo lives in the sidebar now) */
+.fi-topbar-start .fi-logo,
+.fi-topbar-start > a[href] {
+    display: none !important;
+}
+
+/* Sidebar toggle goes BEFORE the context pill. The pill renders first in the
+   DOM (TOPBAR_START hook), so flex-order the toggle containers ahead of it:
+   the hamburger is a direct topbar child; the desktop collapse chevron lives
+   inside .fi-topbar-start. */
+.fi-topbar-open-sidebar-btn,
+.fi-topbar-close-sidebar-btn,
+.fi-topbar-start {
+    order: -1;
+}
+
+/* Toggle icons ink in the brand accent (cream on dark), not Filament gray */
+.fi-topbar-open-sidebar-btn .fi-icon,
+.fi-topbar-close-sidebar-btn .fi-icon,
+.fi-topbar-close-collapse-sidebar-btn .fi-icon {
+    color: var(--fms-accent) !important;
+}
+
+/* Global search + avatar → grouped, pinned to the right */
+.fi-topbar-end {
+    flex: 1 1 auto;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-inline-start: auto;
+}
+
+.fi-global-search {
+    flex: 0 0 auto;
+    width: 22rem;
+    max-width: 40vw;
+}
+
+.fi-global-search-field .fi-input-wrp,
+.fi-global-search .fi-input-wrp {
+    border-radius: 9999px !important;
+    background-color: var(--fms-card-bg) !important;
+    box-shadow: var(--fms-shadow-card);
+    border-color: var(--fms-hairline) !important;
+}
+
+.fi-global-search-field .fi-input {
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+}
+
+/* Search placeholder + magnifier follow the brand accent too */
+.fi-global-search-field .fi-input::placeholder {
+    color: var(--fms-accent) !important;
+    opacity: 0.85;
+}
+
+.fi-global-search-field .fi-input-wrp .fi-icon {
+    color: var(--fms-accent) !important;
+}
+
+/* Notifications + avatar → circular floating chips */
+.fi-topbar-end .fi-icon-btn {
+    background-color: var(--fms-card-bg) !important;
+    border-radius: 9999px !important;
+    box-shadow: var(--fms-shadow-card);
+    border: 1px solid var(--fms-hairline);
+    transition:
+        transform var(--fms-dur-fast) var(--fms-ease-out),
+        box-shadow var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fi-topbar-end .fi-icon-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--fms-shadow-float);
+}
+
+.fi-user-menu .fi-avatar,
+.fi-topbar-end .fi-avatar {
+    border-radius: 9999px !important;
+}
+
+/* ============================================================
+   Page header — big bold heading, quiet breadcrumbs
+   ============================================================ */
+/* .fi-page-main lays out [header, content] as a flex column with a 2rem gap.
+   Pull the content up by 1.25rem to halve the header→content space without
+   touching inter-section spacing elsewhere (~2.5rem → ~1.25rem). */
+.fi-header {
+    margin-bottom: -0.5rem;
+    padding-inline: 0.25rem;
+}
+
+.fi-header-heading {
+    font-weight: 800 !important;
+    letter-spacing: -0.035em;
+    font-size: 2.125rem !important;
+    line-height: 1.05;
+    color: var(--fms-text-strong);
+}
+
+.fi-breadcrumbs {
+    margin-bottom: 0.6rem;
+    padding-inline: 0.25rem;
+}
+
+.fi-breadcrumbs-item,
+.fi-breadcrumbs-item a {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--fms-text-muted);
+}
+
+/* ============================================================
+   Content cards — big rounded white, float on the canvas
+   ============================================================ */
+.fi-section:not(.fi-section-not-contained),
+.fi-ta,
+.fi-wi-stats-overview-stat,
+.fi-fo-component-ctn > .fi-section:not(.fi-section-not-contained),
+.fi-sc-tabs.fi-contained,
+.fi-sc-wizard.fi-contained,
+.fi-tabs-content {
+    border-radius: var(--fms-radius-card) !important;
+    background-color: var(--fms-card-bg) !important;
+    box-shadow: var(--fms-shadow-card) !important;
+    border: 1px solid var(--fms-hairline) !important;
+}
+
+/* "Not contained" sections (e.g. the stats-overview wrapper) must have no
+   card frame — otherwise the wrapper's background shows through the gaps
+   between the individual stat cards. */
+.fi-section-not-contained {
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Lazy-widget placeholder (Filament renders `.fi-section.fi-loading-section`
+   until Livewire swaps the real widget in). Without this it inherits the
+   full card frame and flashes as a big white card. Instead: a quiet
+   skeleton that only fades in after 150ms — fast loads never show it. */
+.fi-section.fi-loading-section {
+    background-color: color-mix(in oklab, var(--fms-card-bg) 55%, transparent) !important;
+    border: 1px solid var(--fms-hairline) !important;
+    box-shadow: none !important;
+    border-radius: var(--fms-radius-card) !important;
+    animation: fms-fade 300ms var(--fms-ease-out) 150ms backwards, fms-pulse 1.8s var(--fms-ease-out) 450ms infinite;
+}
+
+@keyframes fms-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.55;
+    }
+}
+
+/* Flatten the inner content layer so only .fi-section draws the card frame.
+   Filament gives .fi-section-content-ctn its own ring + top-only border +
+   background; in dark mode those misalign with our outer radius and the
+   top border reads as a stroke that doesn't curve. */
+.fi-section-content-ctn,
+.fi-section-content {
+    border-radius: var(--fms-radius-card) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* With the header/content divider removed above, the header's 1rem bottom
+   padding and the content's 1.5rem top padding stack into a ~2.5rem void
+   between a section's heading and its body (e.g. the dashboard analytics
+   filters). Collapse the content's share so the pair reads as one beat. */
+.fi-section-has-header > .fi-section-content-ctn > .fi-section-content {
+    padding-top: 0.375rem !important;
+}
+
+/* Table header spacing. .fi-ta-header-ctn is a zero-padding wrapper by
+   default; the real padding lives on the inner .fi-ta-header (heading +
+   toolbar) and on the filters block. Padding both the wrapper AND the inner
+   doubled it (48px sides / 32px top), so only pad the inner elements. */
+.fi-ta-header-ctn {
+    border-bottom: 0 !important;
+    background-color: transparent !important;
+}
+
+.fi-ta-header {
+    padding: 1rem 1.5rem 0.75rem !important;
+    border-bottom: 0 !important;
+    background-color: transparent !important;
+}
+
+.fi-ta-filters-above-content-ctn {
+    padding: 1rem 1.5rem 1rem !important;
+}
+
+.fi-ta-content {
+    border-radius: 0 0 var(--fms-radius-card) var(--fms-radius-card) !important;
+    background-color: transparent !important;
+}
+
+/* The inner table container has its own 12px radius + a slightly different
+   background; in dark mode its tighter corners let the outer card bg peek
+   through (the "corner that doesn't curve"). Flatten it onto the outer card. */
+.fi-ta-ctn {
+    border-radius: var(--fms-radius-card) !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+}
+
+/* Vendor paints the header band on the tr (`.fi-ta-table > thead > tr`),
+   not the thead — cover both or the band survives. */
+.fi-ta-table thead,
+.fi-ta-table > thead > tr {
+    background-color: transparent !important;
+}
+
+/* Table headers — uppercase micro labels */
+.fi-ta-header-cell {
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--fms-text-muted) !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    padding-inline: 1.5rem !important;
+}
+
+.fi-ta-cell {
+    padding-top: 0.95rem !important;
+    padding-bottom: 0.95rem !important;
+    padding-inline: 1.5rem !important;
+}
+
+.fi-ta-row {
+    transition: background-color var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fi-ta-row:hover {
+    background-color: color-mix(in oklab, var(--fms-accent) 8%, transparent) !important;
+}
+
+/* ============================================================
+   Stats cards — bigger numbers, hover lift
+   ============================================================ */
+.fi-wi-stats-overview-stat-value {
+    font-size: 1.875rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.035em;
+    color: var(--fms-text-strong);
+}
+
+.fi-wi-stats-overview-stat-label {
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    color: var(--fms-text-muted);
+}
+
+.fi-wi-stats-overview-stat {
+    transition:
+        transform var(--fms-dur) var(--fms-ease-out),
+        box-shadow var(--fms-dur) var(--fms-ease-out);
+}
+
+.fi-wi-stats-overview-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--fms-shadow-pop) !important;
+}
+
+/* The stat sparkline wrapper clips itself at Filament's stock rounded-b-xl
+   (12px), but our card radius is 24px — the chart's corners poke out past
+   the card's curve. Match the clip to the card (minus the 1px border). */
+.fi-wi-stats-overview-stat-chart {
+    border-bottom-left-radius: calc(var(--fms-radius-card) - 1px) !important;
+    border-bottom-right-radius: calc(var(--fms-radius-card) - 1px) !important;
+}
+
+/* ============================================================
+   Buttons — solid brand-green primary + confident radius
+   ============================================================ */
+.fi-btn {
+    font-weight: 700;
+    font-size: 0.8125rem;
+    border-radius: var(--fms-radius-input) !important;
+    transition:
+        background-color var(--fms-dur-fast) var(--fms-ease-out),
+        color var(--fms-dur-fast) var(--fms-ease-out),
+        box-shadow var(--fms-dur-fast) var(--fms-ease-out),
+        transform var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fi-btn:hover {
+    transform: translateY(-1px);
+}
+
+.fi-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 60ms;
+}
+
+/* Force the exact brand accent on solid primary buttons */
+.fi-btn.fi-color-primary:not(.fi-link):not(.fi-btn-outlined) {
+    background-color: var(--fms-accent) !important;
+    color: var(--fms-accent-ink) !important;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+    --c-400: var(--fms-accent);
+    --c-500: var(--fms-accent);
+    --c-600: var(--fms-accent);
+}
+
+.fi-btn.fi-color-primary:not(.fi-link):not(.fi-btn-outlined):hover {
+    background-color: var(--fms-accent-strong) !important;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 40, 0.06),
+        0 6px 16px -6px color-mix(in oklab, var(--fms-accent) 55%, transparent);
+}
+
+.fi-btn.fi-color-primary:not(.fi-link):not(.fi-btn-outlined) .fi-btn-label,
+.fi-btn.fi-color-primary:not(.fi-link):not(.fi-btn-outlined) .fi-icon {
+    color: var(--fms-accent-ink) !important;
+}
+
+/* Primary TEXT-LINK actions (row Preview/Edit/Duplicate). The pale accent is
+   unreadable as text, so Filament falls back to a dark olive. Retint to a
+   clean, neutral action-link gray instead — matches the reference. */
+.fi-link.fi-color-primary,
+.fi-link.fi-color-primary > .fi-icon,
+.fi-link.fi-color-primary .fi-icon {
+    color: #3e4c44 !important;
+}
+
+.fi-link.fi-color-primary:hover,
+.fi-link.fi-color-primary:hover > .fi-icon,
+.fi-link.fi-color-primary:hover .fi-icon {
+    color: #14201a !important;
+}
+
+:is(.dark) .fi-link.fi-color-primary,
+:is(.dark) .fi-link.fi-color-primary > .fi-icon,
+:is(.dark) .fi-link.fi-color-primary .fi-icon {
+    color: #cfdcd4 !important;
+}
+
+:is(.dark) .fi-link.fi-color-primary:hover,
+:is(.dark) .fi-link.fi-color-primary:hover > .fi-icon,
+:is(.dark) .fi-link.fi-color-primary:hover .fi-icon {
+    color: #f5f2e0 !important;
+}
+
+/* ============================================================
+   Inputs — rounded, accent focus
+   ============================================================ */
+/* Filament ships inputs as pure white (bg-white utility); an un-layered
+   rule beats the layered utility in BOTH modes, so dark mode's white/5
+   fill must be restated below or it would vanish too. */
+.fi-input-wrp {
+    border-radius: var(--fms-radius-input) !important;
+    background-color: color-mix(in oklab, #14201a 3%, transparent);
+    transition:
+        border-color var(--fms-dur-fast) var(--fms-ease-out),
+        box-shadow var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+:is(.dark) .fi-input-wrp {
+    background-color: color-mix(in oklab, #ffffff 5%, transparent);
+}
+
+.fi-input-wrp:focus-within {
+    border-color: var(--fms-accent-strong) !important;
+    box-shadow: 0 0 0 3px var(--fms-accent-ring) !important;
+}
+
+/* Toggle off-state track ships as neutral zinc (gray-200/gray-700) while
+   only the on-state (.fi-color) follows the brand color — retint the off
+   track with the theme's ink/cream veils so it sits on the green surfaces. */
+.fi-toggle:not(.fi-color) {
+    background-color: color-mix(in oklab, #14201a 18%, transparent);
+}
+
+:is(.dark) .fi-toggle:not(.fi-color) {
+    background-color: color-mix(in oklab, #ffefb3 22%, transparent);
+}
+
+/* ============================================================
+   Badges — pill shape
+   ============================================================ */
+.fi-badge {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    border-radius: 9999px !important;
+}
+
+/* ============================================================
+   Dropdowns / modals — rounded, soft shadow
+   ============================================================ */
+.fi-dropdown-panel {
+    border-radius: var(--fms-radius-lg) !important;
+    box-shadow: var(--fms-shadow-pop) !important;
+    border: 1px solid var(--fms-hairline) !important;
+    background-color: var(--fms-card-bg) !important;
+}
+
+/* The select dropdown's search box is built in JS as a bare input.fi-input
+   inside .fi-select-input-search-ctn, which ships as bg-white/dark:bg-gray-900
+   — a zinc slab sitting on the themed panel. Re-skin the sticky container to
+   the card surface and dress the input like a regular themed field. */
+.fi-select-input-search-ctn {
+    background-color: var(--fms-card-bg) !important;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--fms-hairline);
+}
+
+.fi-select-input-search-ctn .fi-input {
+    border-radius: var(--fms-radius-input);
+    border: 1px solid var(--fms-hairline);
+    background-color: color-mix(in oklab, #14201a 3%, transparent);
+    transition:
+        border-color var(--fms-dur-fast) var(--fms-ease-out),
+        box-shadow var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+:is(.dark) .fi-select-input-search-ctn .fi-input {
+    background-color: color-mix(in oklab, #ffffff 5%, transparent);
+}
+
+.fi-select-input-search-ctn .fi-input:focus {
+    border-color: var(--fms-accent-strong);
+    box-shadow: 0 0 0 3px var(--fms-accent-ring);
+}
+
+.fi-modal-window {
+    border-radius: var(--fms-radius-card) !important;
+    box-shadow: var(--fms-shadow-pop) !important;
+    background-color: var(--fms-card-bg) !important;
+}
+
+/* Simple pages (login, password reset) — Filament gives the card its own
+   gray dark-mode background; pin it to the card token so it sits on the
+   green canvas like every other card. */
+.fi-simple-main {
+    background-color: var(--fms-card-bg) !important;
+}
+
+/* ============================================================
+   Tabs — underline style, accent active
+   ============================================================ */
+/* The nav's bottom padding is dropped so each item's 2px active underline
+   sits directly on the nav's hairline divider instead of floating above it. */
+.fi-tabs {
+    gap: 0;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid var(--fms-hairline) !important;
+    padding-bottom: 0 !important;
+}
+
+.fi-tabs-item {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border-radius: 0 !important;
+    border-bottom: 2px solid transparent;
+    padding: 0.625rem 1rem !important;
+    background: transparent !important;
+    transition:
+        color var(--fms-dur-fast) var(--fms-ease-out),
+        border-color var(--fms-dur-fast) var(--fms-ease-out);
+}
+
+.fi-tabs-item:hover,
+.fi-tabs-item:focus-visible {
+    background: transparent !important;
+}
+
+.fi-tabs-item .fi-tabs-item-label,
+.fi-tabs-item > .fi-icon {
+    color: var(--fms-text-muted) !important;
+}
+
+.fi-tabs-item:hover .fi-tabs-item-label,
+.fi-tabs-item:hover > .fi-icon {
+    color: var(--fms-text-strong) !important;
+}
+
+.fi-tabs-item[aria-selected='true'],
+.fi-tabs-item.fi-active {
+    border-bottom-color: var(--fms-accent-strong) !important;
+    background: transparent !important;
+}
+
+.fi-tabs-item[aria-selected='true'] .fi-tabs-item-label,
+.fi-tabs-item[aria-selected='true'] > .fi-icon,
+.fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-tabs-item.fi-active > .fi-icon {
+    color: var(--fms-accent) !important;
+}
+
+/* ============================================================
+   Wizard — the contained card frame comes from the content-cards
+   rule above; here only the header divider, which otherwise keeps
+   Filament's neutral white/10 border in dark mode.
+   ============================================================ */
+.fi-sc-wizard.fi-contained .fi-sc-wizard-header {
+    border-bottom-color: var(--fms-hairline) !important;
+}
+
+/* ============================================================
+   Builder / repeater items — vendor paints them pure white in
+   light mode (bg: --color-white); dark mode already uses a
+   white/5 veil that sits fine on the green card, so it is
+   restated below (this un-layered rule would override it).
+   ============================================================ */
+.fi-fo-builder-item,
+.fi-fo-repeater-item {
+    background-color: var(--fms-card-bg);
+}
+
+:is(.dark) .fi-fo-builder-item,
+:is(.dark) .fi-fo-repeater-item {
+    background-color: color-mix(in oklab, #ffffff 5%, transparent);
+}
+
+/* ============================================================
+   Scrollbar — slim, both modes
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, #14201a 16%, transparent);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, #14201a 28%, transparent);
+}
+
+:is(.dark) ::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, #ffefb3 18%, transparent);
+}
+
+:is(.dark) ::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, #ffefb3 28%, transparent);
+}
+
+/* ============================================================
+   Reduced motion — collapse every animation/transition to an
+   imperceptible tick; final states still apply instantly.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ============================================================
+   Topbar — context pill (TOPBAR_START render hook): the report
+   you are working inside, the platform pulse on operator
+   screens, or the tenant's live-site pulse everywhere else.
+   ============================================================ */
+.fms-topbar-pill-slot {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    margin-inline-end: 0.75rem;
+}
+
+.fms-topbar-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    max-width: 26rem;
+    min-width: 0;
+    padding: 0.4375rem 0.6875rem 0.4375rem 0.8125rem;
+    border-radius: 999px;
+    background-color: var(--fms-card-bg);
+    border: 1px solid var(--fms-hairline);
+    box-shadow: var(--fms-shadow-card);
+    font-size: 0.8125rem;
+    line-height: 1;
+    color: var(--fms-text-strong);
+    text-decoration: none;
+    transition:
+        border-color var(--fms-dur) var(--fms-ease-out),
+        box-shadow var(--fms-dur) var(--fms-ease-out),
+        transform var(--fms-dur) var(--fms-ease-out);
+}
+
+.fms-topbar-pill:hover {
+    border-color: var(--fms-accent-ring);
+    box-shadow: var(--fms-shadow-float);
+    transform: translateY(-1px);
+}
+
+.fms-topbar-pill:focus-visible {
+    outline: 2px solid var(--fms-accent);
+    outline-offset: 2px;
+}
+
+.fms-topbar-pill-status {
+    flex: 0 0 auto;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+}
+
+.fms-topbar-pill-status.is-published {
+    background-color: #10b981;
+    box-shadow: 0 0 0 3px color-mix(in oklab, #10b981 22%, transparent);
+}
+
+.fms-topbar-pill-status.is-draft {
+    background-color: #f59e0b;
+    box-shadow: 0 0 0 3px color-mix(in oklab, #f59e0b 22%, transparent);
+}
+
+.fms-topbar-pill-status.is-accent {
+    background-color: var(--fms-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--fms-accent) 22%, transparent);
+}
+
+.fms-topbar-pill-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.fms-topbar-pill-badge {
+    flex: 0 0 auto;
+    padding: 0.1875rem 0.4375rem;
+    border-radius: 999px;
+    background-color: var(--fms-accent-tint);
+    color: var(--fms-accent);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.fms-topbar-pill-progress {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3125rem;
+    padding-inline-start: 0.5625rem;
+    border-inline-start: 1px solid var(--fms-hairline);
+    color: var(--fms-text-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.fms-topbar-pill-progress svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    transform: rotate(-90deg);
+}
+
+.fms-topbar-pill-ring-track,
+.fms-topbar-pill-ring {
+    fill: none;
+    stroke-width: 3;
+}
+
+.fms-topbar-pill-ring-track {
+    stroke: var(--fms-hairline);
+}
+
+.fms-topbar-pill-ring {
+    stroke: var(--fms-accent);
+    stroke-linecap: round;
+    transition: stroke-dashoffset var(--fms-dur-slow) var(--fms-ease-out-expo);
+}
