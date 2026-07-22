@@ -60,6 +60,22 @@
     --mrvls-dur-fast: 120ms;
     --mrvls-dur: 200ms;
     --mrvls-dur-slow: 350ms;
+
+    /* --- Companion plugins ---
+       mrvls/filament-block-picker reads --mrvls-block-*, and falls back to
+       Filament's stock grey ramp when nothing sets them. That ramp is cool
+       (chroma-0 whites, violet-hued greys), so the picker's search field and
+       hover preview read as a cold patch inside a warm panel. Alias them to
+       this theme's own tokens; each already flips under :is(.dark) below, so
+       these need declaring once. Inert if the picker is not installed. */
+    --mrvls-block-card-bg: var(--mrvls-card-bg);
+    --mrvls-block-hairline: var(--mrvls-hairline);
+    --mrvls-block-muted: var(--mrvls-text-muted);
+    --mrvls-block-ink: var(--mrvls-text-strong);
+    --mrvls-block-accent: var(--mrvls-accent);
+    --mrvls-block-heading-font: var(--mrvls-font-heading);
+    --mrvls-block-radius: var(--mrvls-radius-lg);
+    --mrvls-block-shadow: var(--mrvls-shadow-pop);
 }
 
 :is(.dark) {
@@ -1016,6 +1032,27 @@ h6,
 .fi-btn.fi-color-primary:not(.fi-link):not(.fi-btn-outlined) .fi-btn-label,
 .fi-btn.fi-color-primary:not(.fi-link):not(.fi-btn-outlined) .fi-icon {
     color: var(--mrvls-accent-ink) !important;
+}
+
+/* Default (colourless) buttons — every secondary action Filament renders
+   without a fi-color-* class: "Cancel", and the builder's "Add to ..." /
+   "Insert between blocks". Filament ships them pure #fff with violet-grey ink
+   and a violet ring, which leaves them as the only surfaces in the panel that
+   ignore the palette — conspicuous against a tinted canvas. Follow the card
+   tokens instead. Outlined and link variants keep their transparent faces. */
+.fi-btn:not([class*='fi-color-']):not(.fi-link):not(.fi-btn-outlined) {
+    background-color: var(--mrvls-card-bg) !important;
+    color: var(--mrvls-text-strong) !important;
+    box-shadow: 0 0 0 1px var(--mrvls-hairline) !important;
+}
+
+.fi-btn:not([class*='fi-color-']):not(.fi-link):not(.fi-btn-outlined):hover {
+    background-color: var(--mrvls-page-bg) !important;
+}
+
+.fi-btn:not([class*='fi-color-']):not(.fi-link):not(.fi-btn-outlined) .fi-btn-label,
+.fi-btn:not([class*='fi-color-']):not(.fi-link):not(.fi-btn-outlined) .fi-icon {
+    color: var(--mrvls-text-strong) !important;
 }
 
 /* Primary TEXT-LINK actions (row Preview/Edit/Duplicate). The pale accent is

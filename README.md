@@ -268,4 +268,12 @@ Re-run `php artisan filament:assets` after upgrading the package.
 - The stylesheet is registered globally via `FilamentAsset`, so it applies to
   every Filament panel in the app. The plugin's per-panel wiring (colours,
   fonts, chrome) only applies where you register it.
+- Filament's default (colourless) buttons — `Cancel`, and the builder's
+  `Add to ...` / `Insert between blocks` — ship pure white with a violet-grey
+  ink and ring. The theme retints them onto the card tokens; outlined and link
+  variants keep their transparent faces.
+- If [`mrvls/filament-block-picker`](https://github.com/Marvelous-Digital/mrvls-filament-block-picker)
+  is installed, its `--mrvls-block-*` tokens are aliased to this theme's, so the
+  picker's search field and hover preview follow your palette instead of falling
+  back to Filament's grey ramp. Nothing to configure; inert without the picker.
 - Requires PHP 8.2+ and Filament v5.
